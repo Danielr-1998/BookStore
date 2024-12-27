@@ -45,22 +45,25 @@ class BookController extends Controller
     {
         // Validación de los datos
         $request->validate([
-            'titulo' => 'required|string|max:255',
-            'autor' => 'required|string|max:255',
-            'anio_publicacion' => 'required|integer',
-            'genero' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'publicationYear' => 'required|integer',
+            'genre' => 'required|string|max:255',
         ]);
 
         // Crear el libro
         Book::create([
-            'titulo' => $request->titulo,
-            'autor' => $request->autor,
-            'anio_publicacion' => $request->anio_publicacion,
-            'genero' => $request->genero,
+            'title' => $request->title, // Aquí recibes los datos
+            'author' => $request->author,
+            'publication_year' => $request->publicationYear, // Puedes usar 'publicationYear' ya que el frontend usa ese nombre
+            'genre' => $request->genre,
         ]);
 
-        // Redirigir a la lista de libros utilizando Inertia
-        return redirect()->route('books.index');
+        // Retornar respuesta en formato JSON si es necesario, o redirigir
+        return response()->json([
+            'message' => 'Libro creado exitosamente',
+            'data' => $request->all(),
+        ]);
     }
 
     /**
