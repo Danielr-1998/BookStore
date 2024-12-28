@@ -1,7 +1,6 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
-import Loader from './Loader'; // Importa el loader
-
+import Loader from './Loader'; 
 interface CreateCitaModalProps {
   onClose: () => void;
   profesionales: Array<{ id: number; nombre: string }>;
@@ -19,7 +18,7 @@ const CreateCitaModal: React.FC<CreateCitaModalProps> = ({ onClose, profesionale
     e.preventDefault();
     post(route('citas.store'), {
       onSuccess: () => {
-        onClose();  // Cerrar la modal después de enviar correctamente
+        onClose();  
       },
     });
   };
@@ -27,9 +26,8 @@ const CreateCitaModal: React.FC<CreateCitaModalProps> = ({ onClose, profesionale
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
       <div className="bg-white p-6 rounded-md w-1/3">
-        <h2 className="text-xl mb-4">Crear Cita</h2>
+        <h2 className="text-xl mb-4">Crear Reserva</h2>
 
-        {/* Mostrar el Loader si está procesando */}
         {processing ? (
           <Loader />
         ) : (
@@ -76,7 +74,7 @@ const CreateCitaModal: React.FC<CreateCitaModalProps> = ({ onClose, profesionale
             </div>
 
             <div className="mb-4">
-              <label htmlFor="profesional_id" className="block">Profesional</label>
+              <label htmlFor="profesional_id" className="block">Libro</label>
               <select
                 id="profesional_id"
                 name="profesional_id"
@@ -85,7 +83,7 @@ const CreateCitaModal: React.FC<CreateCitaModalProps> = ({ onClose, profesionale
                 className="w-full border p-2"
                 required
               >
-                <option value="">Seleccione un profesional</option>
+                <option value="">Seleccione un libro</option>
                 {profesionales && profesionales.length > 0 ? (
                   profesionales.map((profesional) => (
                     <option key={profesional.id} value={profesional.id}>
@@ -93,7 +91,7 @@ const CreateCitaModal: React.FC<CreateCitaModalProps> = ({ onClose, profesionale
                     </option>
                   ))
                 ) : (
-                  <option value="">No hay profesionales disponibles</option>
+                  <option value="">No hay Libros disponibles</option>
                 )}
               </select>
               {errors.profesional_id && <span className="text-red-500">{errors.profesional_id}</span>}
@@ -110,9 +108,9 @@ const CreateCitaModal: React.FC<CreateCitaModalProps> = ({ onClose, profesionale
               <button
                 type="submit"
                 className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 ms-2"
-                disabled={processing} // Desactivar el botón mientras está procesando
+                disabled={processing} 
               >
-                Crear Cita
+                Crear Reserva
               </button>
             </div>
           </form>

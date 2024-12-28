@@ -34,7 +34,7 @@ class BookController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
-            'publicationYear' => 'required|integer',
+            'publicationYear' => 'required|integer|min:1901|max:2155',  
             'genre' => 'required|string|max:255',
         ]);
 
@@ -42,7 +42,7 @@ class BookController extends Controller
         $book = Book::create([
             'title' => $request->title,
             'author' => $request->author,
-            'publicationYear' => $request->publicationYear,
+            'publication_year' => $request->publicationYear,
             'genre' => $request->genre,
         ]);
 
@@ -75,8 +75,11 @@ class BookController extends Controller
         // Actualizar el libro
         $book->update($validated);
 
-        return response()->json($book);
-    }
+        $books = Book::all();
+
+        return Inertia::render('Libros/Index', [
+            'libros' => $books,
+        ]);    }
 
     /**
      * Eliminar un libro.
@@ -90,7 +93,9 @@ class BookController extends Controller
 
         // Eliminar el libro
         $book->delete();
+        $books = Book::all();
 
-        return response()->json(['message' => 'Book deleted successfully']);
-    }
+        return Inertia::render('Libros/Index', [
+            'libros' => $books,
+        ]);    }
 }

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { useTable, usePagination, useFilters, useRowSelect } from 'react-table'; // Importar useRowSelect
-import { usePage, useForm } from '@inertiajs/react'; // Usamos useForm para hacer la petición DELETE
+import { useTable, usePagination, useFilters, useRowSelect } from 'react-table'; 
+import { usePage, useForm } from '@inertiajs/react'; 
 import { Cita } from '@/types/Cita';
-import { FaCheckCircle, FaTimesCircle, FaRegClock } from 'react-icons/fa'; // Iconos de react-icons
+import { FaCheckCircle, FaTimesCircle, FaRegClock } from 'react-icons/fa'; 
 
-// Filtro por columna (por defecto)
 const DefaultColumnFilter = ({ column: { filterValue, setFilter } }: any) => (
   <input
     value={filterValue || ''}
@@ -14,7 +13,6 @@ const DefaultColumnFilter = ({ column: { filterValue, setFilter } }: any) => (
   />
 );
 
-// Filtro para fecha (por defecto)
 const DateColumnFilter = ({ column: { filterValue, setFilter } }: any) => (
   <input
     type="date"
@@ -26,15 +24,13 @@ const DateColumnFilter = ({ column: { filterValue, setFilter } }: any) => (
 );
 
 const ListCitas: React.FC = () => {
-  const { citas } = usePage().props as { citas: Cita[] }; // Aseguramos que citas es un array de Cita
+  const { citas } = usePage().props as { citas: Cita[] }; 
   const { delete: deleteRequest } = useForm();
 
-  // Usamos useForm para realizar la solicitud PUT
   const { put } = useForm();
   const [feedbackMessage, setFeedbackMessage] = React.useState('');
-  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set()); // Estado para las citas seleccionadas
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set()); 
 
-  // Función para actualizar el estado de la cita utilizando Inertia (a través de useForm)
   const handleEstadoChange = (id: number, estado: string) => {
     setFeedbackMessage('Actualizando estado...');
     put(`/citas/${id}/estado/${estado}`, {
@@ -51,9 +47,9 @@ const ListCitas: React.FC = () => {
     setSelectedRows((prevSelectedRows) => {
       const newSelectedRows = new Set(prevSelectedRows);
       if (newSelectedRows.has(id)) {
-        newSelectedRows.delete(id); // Si ya está seleccionado, lo deseleccionamos
+        newSelectedRows.delete(id); 
       } else {
-        newSelectedRows.add(id); // Si no está seleccionado, lo seleccionamos
+        newSelectedRows.add(id); 
       }
       return newSelectedRows;
     });
@@ -61,9 +57,9 @@ const ListCitas: React.FC = () => {
 
   const handleSelectAllRows = () => {
     if (selectedRows.size === citas.length) {
-      setSelectedRows(new Set()); // Si todos están seleccionados, deseleccionamos
+      setSelectedRows(new Set()); 
     } else {
-      setSelectedRows(new Set(citas.map((cita) => cita.id))); // Seleccionamos todas las citas
+      setSelectedRows(new Set(citas.map((cita) => cita.id))); 
     }
   };
 
@@ -71,21 +67,19 @@ const ListCitas: React.FC = () => {
     if (selectedRows.size > 0) {
       const idsToDelete = Array.from(selectedRows);
   console.log(idsToDelete);
-      // Usar deleteRequest de Inertia.js para hacer la solicitud DELETE
       deleteRequest('/citas', {
         data: { ids: idsToDelete },
         onSuccess: () => {
-          setFeedbackMessage('Citas eliminadas correctamente');
-          setSelectedRows(new Set()); // Limpiar las selecciones después de eliminar
+          setFeedbackMessage('Reserva eliminadas correctamente');
+          setSelectedRows(new Set()); 
         },
         onError: () => {
-          setFeedbackMessage('Error al eliminar las citas seleccionadas');
+          setFeedbackMessage('Error al eliminar las Reservas seleccionadas');
         }
       });
     }
   };
 
-  // Definir las columnas de la tabla
   const columns = React.useMemo(
     () => [
       {
@@ -96,8 +90,8 @@ const ListCitas: React.FC = () => {
             onChange={handleSelectAllRows}
           />
         ),
-        id: 'select', // Un identificador único para esta columna
-        disableSortBy: true, // No permitimos ordenar por esta columna
+        id: 'select', 
+        disableSortBy: true, 
         Cell: ({ row }: any) => (
           <input
             type="checkbox"
@@ -108,8 +102,8 @@ const ListCitas: React.FC = () => {
       },
       {
         Header: 'Estado',
-        accessor: 'estado', // Asumiendo que el campo estado está en la cita
-        Filter: DefaultColumnFilter, // Filtro para la columna
+        accessor: 'estado', 
+        Filter: DefaultColumnFilter, 
         Cell: ({ value }: any) => (
           <span className={`px-2 py-1 rounded-md text-xs ${getEstadoClass(value)}`}>
             {value}
@@ -119,28 +113,28 @@ const ListCitas: React.FC = () => {
       {
         Header: 'Fecha y Hora',
         accessor: 'fecha_hora',
-        Cell: ({ value }: any) => new Date(value).toLocaleString(), // Formato de fecha
-        Filter: DateColumnFilter, // Filtro para la columna de fecha
+        Cell: ({ value }: any) => new Date(value).toLocaleString(),
+        Filter: DateColumnFilter, 
       },
       {
         Header: 'Descripción',
         accessor: 'descripcion',
-        Filter: DefaultColumnFilter, // Filtro para la columna
+        Filter: DefaultColumnFilter,
       },
       {
         Header: 'Profesional',
-        accessor: 'profesional.nombre', // Asegúrate de que el nombre del profesional esté bien accesible
-        Filter: DefaultColumnFilter, // Filtro para la columna
+        accessor: 'profesional.nombre', 
+        Filter: DefaultColumnFilter, 
       },
       {
         Header: 'Telefono',
-        accessor: 'telefono', // Asegúrate de que el nombre del profesional esté bien accesible
+        accessor: 'telefono', 
         Filter: DefaultColumnFilter, // Filtro para la columna
       },
       {
         Header: 'Acciones',
         Cell: ({ row }: any) => {
-          const { id, estado } = row.original; // Accedemos a los datos de la cita
+          const { id, estado } = row.original; 
           return (
             <div className="flex space-x-2">
               <button
@@ -169,7 +163,6 @@ const ListCitas: React.FC = () => {
     [selectedRows]
   );
 
-  // Función para devolver clases según el estado
   const getEstadoClass = (estado: string) => {
     const estadoClasses = {
       atendida: 'bg-green-100 text-green-800',
@@ -180,7 +173,6 @@ const ListCitas: React.FC = () => {
     return estadoClasses[estado] || 'bg-gray-100 text-gray-800';
   };
 
-  // Usamos react-table para configurar la tabla y la paginación
   const {
     getTableProps,
     getTableBodyProps,
@@ -202,16 +194,15 @@ const ListCitas: React.FC = () => {
     {
       columns,
       data: citas,
-      initialState: { pageSize: 10 }, // Puedes ajustar la cantidad de filas por página
+      initialState: { pageSize: 10 }, 
     },
-    useFilters, // Para filtros
-    usePagination, // Para paginación
-    useRowSelect // Asegúrate de incluir useRowSelect
+    useFilters, 
+    usePagination, 
+    useRowSelect 
   );
 
   return (
     <div>
-      {/* Feedback message */}
       {feedbackMessage && <div className="p-2 text-green-600">{feedbackMessage}</div>}
       <div className="overflow-hidden max-w-full p-4">
         <div className="overflow-x-auto shadow rounded-lg border border-gray-300 w-full">
@@ -225,7 +216,6 @@ const ListCitas: React.FC = () => {
                       className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       {column.render('Header')}
-                      {/* Renderizamos el filtro de cada columna */}
                       <div>{column.canFilter ? column.render('Filter') : null}</div>
                     </th>
                   ))}
@@ -279,13 +269,12 @@ const ListCitas: React.FC = () => {
         </div>
       </div>
 
-      {/* Botón de eliminación masiva */}
       <div className="flex justify-end mt-4">
         <button
           onClick={handleDeleteSelected}
           className="px-4 py-2 bg-red-500 text-white rounded-md"
         >
-          Eliminar citas seleccionadas
+          Eliminar Reservas seleccionadas
         </button>
       </div>
     </div>

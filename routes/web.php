@@ -35,8 +35,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('books/{id}', [BookController::class, 'show']); // Obtener un libro por ID
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
-    Route::put('books/{id}', [BookController::class, 'update']); // Editar un libro
-    Route::delete('books/{id}', [BookController::class, 'destroy']); // Eliminar un libro
+    Route::put('books/{id}', [BookController::class, 'update'])->name('books.update'); // Editar un libro
+    Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
 });
 
 require __DIR__.'/auth.php';

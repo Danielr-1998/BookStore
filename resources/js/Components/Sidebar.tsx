@@ -22,14 +22,22 @@ const Sidebar = () => {
             <span className="text-sm">Inicio</span>
           </Link>
         </li>
-
+        <li>
+          <Link
+            href="/books"
+            className="flex items-center p-2 hover:bg-gray-700 rounded-lg transition-colors"
+          >
+            <FaCalendarCheck className="mr-3 text-xl" /> {/* Icono de Citas */}
+            <span className="text-sm">Libros</span>
+          </Link>
+        </li>
         <li>
           <Link
             href="/citas"
             className="flex items-center p-2 hover:bg-gray-700 rounded-lg transition-colors"
           >
             <FaCalendarCheck className="mr-3 text-xl" /> {/* Icono de Citas */}
-            <span className="text-sm">Citas</span>
+            <span className="text-sm">Reservas</span>
           </Link>
         </li>
 
