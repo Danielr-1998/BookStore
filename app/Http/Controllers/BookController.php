@@ -4,38 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Book;
-use Inertia\Inertia;  // Asegúrate de importar Inertia
+use Inertia\Inertia;
 
 class BookController extends Controller
 {
     /**
      * Mostrar el listado de todos los libros.
      */
-    public function index()
+    public function __construct()
     {
-        // Obtener todos los libros
-        $books = Book::all();
-        
-        // Usar Inertia para renderizar la vista 'Libros/Index'
-        return Inertia::render('Libros/Index', [
-            'libros' => $books
-        ]);
+        $this->middleware('auth');
     }
 
-    /**
-     * Mostrar un libro específico.
-     */
-    public function show($id)
+    public function index()
     {
-        $book = Book::find($id);
-        if ($book) {
-            // Mostrar los detalles de un libro específico
-            return Inertia::render('Libros/Show', [
-                'book' => $book
-            ]);
-        }
-
-        return response()->json(['message' => 'Book not found'], 404);
+        // Obtener todos los libros desde la base de datos
+        $books = Book::all();
+        // Pasar los libros a la vista Inertia
+        return Inertia::render('Libros/Index', [
+            'libros' => $books,
+        ]);
     }
 
     /**
@@ -43,7 +31,6 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        // Validación de los datos
         $request->validate([
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
@@ -52,17 +39,18 @@ class BookController extends Controller
         ]);
 
         // Crear el libro
-        Book::create([
-            'title' => $request->title, // Aquí recibes los datos
+        $book = Book::create([
+            'title' => $request->title,
             'author' => $request->author,
-            'publication_year' => $request->publicationYear, // Puedes usar 'publicationYear' ya que el frontend usa ese nombre
+            'publicationYear' => $request->publicationYear,
             'genre' => $request->genre,
         ]);
 
-        // Retornar respuesta en formato JSON si es necesario, o redirigir
-        return response()->json([
-            'message' => 'Libro creado exitosamente',
-            'data' => $request->all(),
+        // Retornar los datos del libro y los libros actuales
+        $books = Book::all();
+        return Inertia::render('Libros/Index', [
+            'libros' => $books,
+            'success' => 'Libro creado exitosamente!',
         ]);
     }
 
@@ -78,16 +66,15 @@ class BookController extends Controller
 
         // Validación de los datos
         $validated = $request->validate([
-            'titulo' => 'required|string|max:255',
-            'autor' => 'required|string|max:255',
-            'anio_publicacion' => 'required|integer',
-            'genero' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'publicationYear' => 'required|integer',
+            'genre' => 'required|string|max:255',
         ]);
 
         // Actualizar el libro
         $book->update($validated);
 
-        // Devolver la respuesta como JSON (puedes redirigir o hacer otra acción)
         return response()->json($book);
     }
 
@@ -104,7 +91,6 @@ class BookController extends Controller
         // Eliminar el libro
         $book->delete();
 
-        // Devolver un mensaje de éxito
         return response()->json(['message' => 'Book deleted successfully']);
     }
 }

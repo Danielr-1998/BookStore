@@ -19,11 +19,4 @@ class Book extends Model
         'genre',
     ];
 
-    // Si deseas agregar relaciones, aquí es donde las defines.
-    // Por ejemplo, si cada libro tiene una categoría, la relación sería algo como:
-    // public function category() {
-    //     return $this->belongsTo(Category::class);
-    // }
-
-    // Puedes definir más configuraciones o métodos adicionales para el modelo si es necesario.
 }

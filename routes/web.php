@@ -31,7 +31,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/citas/{id}/estado/{estado}', [CitaController::class, 'updateEstado']);
     Route::delete('/citas', [CitaController::class, 'deleteCitas']);
 
-    Route::get('books', [BookController::class, 'index']); // Obtener todos los libros
+// routes/web.php
+Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('books/{id}', [BookController::class, 'show']); // Obtener un libro por ID
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
     Route::put('books/{id}', [BookController::class, 'update']); // Editar un libro
