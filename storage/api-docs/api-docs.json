@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API de Gestión de Citas",
-        "description": "Esta es la API para gestionar las citas en el sistema.",
+        "title": "API de Gestión de Reservas y Libros",
+        "description": "Esta es la API para gestionar las reservas y los libros en el sistema.",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "email": "contacto@tusitio.com"
@@ -14,11 +14,145 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/citas": {
+            "get": {
+                "tags": ["Reservas"],
+                "summary": "Mostrar todas las citas del usuario autenticado",
+                "operationId": "514dbdc32e9a796f6cd3d7b0c973c125",
+                "responses": {
+                    "200": {
+                        "description": "Lista de citas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "fecha_hora": {
+                                                "type": "string",
+                                                "example": "2024-12-25 14:00"
+                                            },
+                                            "descripcion": {
+                                                "type": "string",
+                                                "example": "Revisión médica"
+                                            },
+                                            "telefono": {
+                                                "type": "string",
+                                                "example": "123456789"
+                                            },
+                                            "profesional_id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "user_id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "estado": {
+                                                "type": "string",
+                                                "example": "pendiente"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": ["Reservas"],
+                "summary": "Crear una nueva cita",
+                "operationId": "b676c8aabc49b6183feb365c9d2d12d8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "fecha_hora",
+                                    "descripcion",
+                                    "telefono",
+                                    "profesional_id"
+                                ],
+                                "properties": {
+                                    "fecha_hora": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-12-25 14:00"
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Revisión médica"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    },
+                                    "profesional_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cita creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cita creada exitosamente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Datos inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Los datos proporcionados son inválidos."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/citas/create": {
             "get": {
-                "tags": [
-                    "Citas"
-                ],
+                "tags": ["Reservas"],
                 "summary": "Mostrar formulario para crear una nueva cita",
                 "operationId": "06aee430c03d234979b03c26b04e7648",
                 "responses": {
@@ -35,10 +169,8 @@
         },
         "/api/citas/delete": {
             "post": {
-                "tags": [
-                    "Citas"
-                ],
-                "summary": "Eliminar citas seleccionadas",
+                "tags": ["Reservas"],
+                "summary": "Eliminar reservas seleccionadas",
                 "operationId": "a78364a1128ddc487d422e761c1c9d80",
                 "requestBody": {
                     "required": true,
@@ -50,7 +182,7 @@
                                 ],
                                 "properties": {
                                     "ids": {
-                                        "description": "Lista de IDs de las citas a eliminar",
+                                        "description": "Lista de IDs de las reservas a eliminar",
                                         "type": "array",
                                         "items": {
                                             "type": "integer"
@@ -64,14 +196,14 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Citas eliminadas correctamente",
+                        "description": "Reservas eliminadas correctamente",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Citas eliminadas correctamente"
+                                            "example": "Reservas eliminadas correctamente"
                                         }
                                     },
                                     "type": "object"
@@ -80,46 +212,14 @@
                         }
                     },
                     "400": {
-                        "description": "Error en los datos proporcionados (por ejemplo, IDs no válidos)",
+                        "description": "Error en los datos proporcionados",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "error": {
                                             "type": "string",
-                                            "example": "Los IDs proporcionados no son válidos o no existen"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "No autorizado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "No autorizado. Token de acceso inválido o expirado."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Error en el servidor al intentar eliminar las citas",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Error interno del servidor. Intente nuevamente."
+                                            "example": "IDs inválidos o no existentes"
                                         }
                                     },
                                     "type": "object"
@@ -134,12 +234,269 @@
                     }
                 ]
             }
+        },
+        "/api/libros": {
+            "get": {
+                "tags": ["Libros"],
+                "summary": "Obtener todos los libros",
+                "operationId": "getBooks",
+                "responses": {
+                    "200": {
+                        "description": "Listado de libros",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "El Gran Libro"
+                                            },
+                                            "author": {
+                                                "type": "string",
+                                                "example": "Juan Pérez"
+                                            },
+                                            "publicationYear": {
+                                                "type": "integer",
+                                                "example": 2023
+                                            },
+                                            "genre": {
+                                                "type": "string",
+                                                "example": "Ficción"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Libros"],
+                "summary": "Crear un nuevo libro",
+                "operationId": "createBook",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "author",
+                                    "publicationYear",
+                                    "genre"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Nuevo Libro"
+                                    },
+                                    "author": {
+                                        "type": "string",
+                                        "example": "Carlos Ruiz"
+                                    },
+                                    "publicationYear": {
+                                        "type": "integer",
+                                        "example": 2024
+                                    },
+                                    "genre": {
+                                        "type": "string",
+                                        "example": "Drama"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Libro creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Libro creado exitosamente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Datos inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Los datos proporcionados son inválidos."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/libros/{id}": {
+            "put": {
+                "tags": ["Libros"],
+                "summary": "Actualizar un libro",
+                "operationId": "updateBook",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID del libro a actualizar",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "author",
+                                    "publicationYear",
+                                    "genre"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Libro Actualizado"
+                                    },
+                                    "author": {
+                                        "type": "string",
+                                        "example": "Carlos Ruiz"
+                                    },
+                                    "publicationYear": {
+                                        "type": "integer",
+                                        "example": 2025
+                                    },
+                                    "genre": {
+                                        "type": "string",
+                                        "example": "Suspenso"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Libro actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Libro actualizado exitosamente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Datos inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Los datos proporcionados son inválidos."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Libros"],
+                "summary": "Eliminar un libro",
+                "operationId": "deleteBook",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID del libro a eliminar",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Libro eliminado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Libro eliminado exitosamente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ID inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "El libro no existe."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "tags": [
         {
-            "name": "Citas",
-            "description": "Citas"
+            "name": "Reservas",
+            "description": "API para gestionar las citas y reservas"
+        },
+        {
+            "name": "Libros",
+            "description": "API para gestionar los libros en el sistema"
         }
     ]
 }
